@@ -1,5 +1,7 @@
 # /game/simulation/mercado_dinamico.py
 
+# metodo de ordenamiento
+
 from collections import defaultdict
 import random
 

@@ -1,5 +1,7 @@
 # /game/simulation/inventario_jugador.py
 
+# programacion dinamica
+
 from collections import defaultdict
 
 class Jugador:

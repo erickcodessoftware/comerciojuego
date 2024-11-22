@@ -1,5 +1,7 @@
 # /game/simulation/sistema_transporte.py
 
+# recorrido de grafos
+
 import heapq
 
 class Ciudad:
