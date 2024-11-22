@@ -4,11 +4,15 @@ from manejador_csv import leer_csv, escribir_csv
 from sistema_transporte import SistemaTransporte
 from mercado_dinamico import Mercado
 from inventario_jugador import Jugador
+import os
 
-CIUDADES = ["CiudadA", "CiudadB", "CiudadC", "CiudadD", "CiudadE"]
+CIUDADES = ["Ciudad almeja", "Ciudad gotica", "Mordor", "Los santos", "Tecate"]
 RECURSOS = ["pan", "agua", "espadas", "escudos", "pocimas"]
 
 def mostrar_menu_principal():
+    # Limpiar pantalla
+    if os.name == 'nt':  # Windows
+        os.system('cls')
     print("\n=== Simulador de Comercio ===")
     print("1. Seleccionar jugador")
     print("2. Crear nuevo jugador")
@@ -16,6 +20,9 @@ def mostrar_menu_principal():
     return input("Elige una opción: ")
 
 def seleccionar_jugador(jugadores):
+    # Limpiar pantalla
+    if os.name == 'nt':  # Windows
+        os.system('cls')
     print("\n=== Jugadores Disponibles ===")
     for idx, jugador in enumerate(jugadores):
         print(f"{idx + 1}. {jugador['nombre']} (Ciudad: {jugador['ciudad']}, Saldo: {jugador['balance']} sheintavos)")
@@ -29,6 +36,9 @@ def seleccionar_jugador(jugadores):
     return None
 
 def crear_nuevo_jugador(jugadores_csv):
+    # Limpiar pantalla
+    if os.name == 'nt':  # Windows
+        os.system('cls')
     nombre = input("\nIngresa tu nombre: ")
     print("Ciudades disponibles: " + ", ".join(CIUDADES))
     ciudad = input("Elige tu ciudad inicial: ")
@@ -39,13 +49,15 @@ def crear_nuevo_jugador(jugadores_csv):
         "nombre": nombre,
         "ciudad": ciudad,
         "balance": 100,  # Saldo inicial en sheintavos
-        "inventario": {}  # Inventario vacío
     }
     jugadores_csv.append(jugador)
     print(f"¡Jugador {nombre} creado con éxito!")
     return jugador
 
 def mover_jugador(jugador, transporte):
+    # Limpiar pantalla
+    if os.name == 'nt':  # Windows
+        os.system('cls')
     print("\n=== Movimiento entre Ciudades ===")
     print(f"Ciudad actual: {jugador['ciudad']}")
     print("Ciudades disponibles para moverse:")
@@ -77,6 +89,9 @@ def mover_jugador(jugador, transporte):
     return jugador
 
 def comerciar(jugador, mercado):
+    # Limpiar pantalla
+    if os.name == 'nt':  # Windows
+        os.system('cls')
     print("\n=== Comercio ===")
     ciudad = jugador["ciudad"]
     print(f"Ciudad actual: {ciudad}")
@@ -144,6 +159,9 @@ def simular():
                 print("Saliendo del juego...")
                 break
         else:
+            # Limpiar pantalla
+            if os.name == 'nt':  # Windows
+                os.system('cls')
             print(f"\nJugador actual: {jugador_actual['nombre']} en {jugador_actual['ciudad']}")
             print("1. Moverte a otra ciudad")
             print("2. Comerciar")

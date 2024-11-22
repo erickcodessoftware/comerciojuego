@@ -17,8 +17,8 @@ class SistemaTransporte:
     def cargar_rutas(self, datos_rutas):
         """Cargar rutas desde una lista de diccionarios."""
         for ruta in datos_rutas:
-            ciudad_a = ruta["CiudadA"]
-            ciudad_b = ruta["CiudadB"]
+            ciudad_a = ruta["Ciudad almeja"]
+            ciudad_b = ruta["Ciudad gotica"]
             costo = int(ruta["Costo"])
             self.agregar_ciudad(ciudad_a)
             self.agregar_ciudad(ciudad_b)
