@@ -2,8 +2,9 @@ import csv
 from manejador_csv import leer_csv, escribir_csv
 from sistema_transporte import SistemaTransporte
 from mercado_dinamico import Mercado
+from estrategia_comercial import calcular_mejor_venta
 from config import CIUDADES
-from inventario_jugador import Jugador
+from estrategia_comercial import Jugador
 import os
 
 CIUDADES = ["Ciudad almeja", "Ciudad gotica", "Mordor", "Los santos", "Tecate"]
@@ -115,7 +116,9 @@ def mover_jugador(jugador, transporte):
     # Mostrar todas las ciudades y calcular costos
     print("Ciudades disponibles para moverse:")
     costos_ciudades = {}
-    for ciudad in transporte.ciudades:
+    ciudades_lista = []
+    
+    for index, ciudad in enumerate(transporte.ciudades, start=1):
         if ciudad == jugador.ciudad:
             continue
 
@@ -123,14 +126,17 @@ def mover_jugador(jugador, transporte):
         if ciudad in transporte.ciudades[jugador.ciudad].vecinos:
             _, costo_base = transporte.encontrar_ruta_optima(jugador.ciudad, ciudad)
         else:
-            costo_base = 50  # Precio base más alto para ciudades no conectadas directamente
+            costo_base = 25  # Precio base más alto para ciudades no conectadas directamente
 
         costos_ciudades[ciudad] = costo_base
-        print(f"- {ciudad} (Costo base: {costo_base} sheintavos)")
+        ciudades_lista.append(ciudad)
+        print(f"{index}. {ciudad} (Costo base: {costo_base} sheintavos)")
 
-    destino = input("\nElige una ciudad para moverte: ")
-
-    if destino not in costos_ciudades:
+    # Pedir al usuario que elija una ciudad por número
+    try:
+        opcion = int(input("\nElige una ciudad para moverte (número): "))
+        destino = ciudades_lista[opcion - 1]  # Ajustar para que la selección comience desde 1
+    except (ValueError, IndexError):
         print("Ciudad no válida. Intenta de nuevo.")
         input("\nPresiona Enter para continuar...")
         return jugador
@@ -183,14 +189,15 @@ def comerciar(jugador, mercado):
     for recurso in RECURSOS:
         precio_ciudad = mercado.precios_por_ciudad[ciudad][recurso]
         print(f"- {recurso}: {precio_ciudad} sheintavos")
-    
-    print("2. Comprar recursos")
-    print("3. Vender recursos")
-    print("4. Regresar")
+
+    print("\n¿Qué acción deseas realizar?")
+    print("1. Comprar recursos")
+    print("2. Vender recursos")
+    print("3. Regresar")
     
     opcion = input("Elige una opción: ")
 
-    if opcion == "2":
+    if opcion == "1":
         recurso = input("¿Qué recurso quieres comprar? ")
         if recurso not in RECURSOS:
             print("Recurso no válido.")
@@ -209,7 +216,7 @@ def comerciar(jugador, mercado):
             print("No tienes suficientes sheintavos.")
             input("\nPresiona Enter para continuar...")
 
-    elif opcion == "3":
+    elif opcion == "2":
         recurso = input("¿Qué recurso quieres vender? ")
         inventario = jugador.inventario
         if recurso not in inventario or inventario[recurso] <= 0:
@@ -232,8 +239,7 @@ def comerciar(jugador, mercado):
         
     return jugador
 
-
-def mostrar_inventario(jugador):
+def mostrar_inventario(jugador, mercado):
     # Limpiar pantalla
     if os.name == 'nt':  # Windows
         os.system('cls')
@@ -250,7 +256,21 @@ def mostrar_inventario(jugador):
             print(f"- {recurso}: {cantidad} unidades (Peso por unidad: {peso})")
     else:
         print("El inventario está vacío.")
-    input("\nPresiona Enter para continuar...")
+    
+    print("\n¿Qué acción deseas realizar?")
+    print("1. Ver mejor estrategia para vender las cosas en el inventario")
+    print("2. Regresar")
+    
+    opcion = input("Elige una opción: ")
+    
+    if opcion == "1":
+        opciones_venta = calcular_mejor_venta(inventario, mercado.precios_por_ciudad, jugador.ciudad)
+        
+        print("\nMejores opciones de venta:")
+        for opcion in opciones_venta:
+            print(f"Ciudad: {opcion['ciudad']}, Recurso: {opcion['recurso']}, Cantidad: {opcion['cantidad']}, Ganancia: {opcion['ganancia']} sheintavos")
+        
+        input("\nPresiona Enter para continuar...")
 
 def simular():
     jugadores_csv = leer_csv("datos/jugadores.csv")
@@ -305,10 +325,9 @@ def simular():
             elif accion == "2":
                 jugador_actual = comerciar(jugador_actual, mercado)
             elif accion == "3":
-                mostrar_inventario(jugador_actual)
+                mostrar_inventario(jugador_actual, mercado)
             elif accion == "4":
                 jugador_actual = None
-
 
 if __name__ == "__main__":
     simular()

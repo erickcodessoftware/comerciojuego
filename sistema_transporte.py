@@ -1,6 +1,7 @@
 # /game/simulation/sistema_transporte.py
 
 # recorrido de grafos
+# algoritmo de Dijkstra para encontrar la ruta más corta entre dos ciudades en un sistema de transporte
 
 import heapq
 
